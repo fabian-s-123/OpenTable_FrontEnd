@@ -7,11 +7,7 @@ export default class Login extends Component {
         return (
             <div>
                 <Topnav />
-                <h1>Login</h1>
-                <div> HELLO</div>
-                <input>
-                </input>
-                <input></input>
+                
             </div>
         )
     }

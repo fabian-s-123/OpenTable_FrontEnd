@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import "./Topnav.components.css"
+import LoginNav from '../LoginNav/LoginNav.components'
 
 export default class Topnav extends Component {
     render() {
@@ -7,7 +8,6 @@ export default class Topnav extends Component {
             <div className="topnav">
                 <a href="http://localhost:3000/">Home</a>
                 <a href="http://localhost:3000/reservation">Reservation</a>
-                <a href="http://localhost:3000/login">Login</a>
             </div>
         )
     }
