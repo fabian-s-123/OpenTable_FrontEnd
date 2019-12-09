@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Topnav from "../../components/Topnav/Topnav.components"
 import LoginNav from '../../components/LoginNav/LoginNav.components'
+import SearchBars from '../../components/SearchBars/SearchBars.components'
 import "./Home.page.css"
 
 export default class Home extends Component {
@@ -12,10 +13,7 @@ export default class Home extends Component {
                     <Topnav />
                     <LoginNav />
                 </div>
-
-
-                Welcome to the Restaurant book a table site OpenTable
-
+                <SearchBars />
             </div>
 
         )
