@@ -6,7 +6,6 @@ export default class Reservation extends Component {
     render() {
         return (
             <div>
-                <Topnav />
                 Here you can make your Reservation!
             </div>
         )

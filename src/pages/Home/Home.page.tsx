@@ -7,12 +7,7 @@ import "./Home.page.css"
 export default class Home extends Component {
     render() {
         return (
-
-            <div>
-                <div className="nav-div">
-                    <Topnav />
-                    <LoginNav />
-                </div>
+            <div className="search-container">
                 <SearchBars />
             </div>
 
