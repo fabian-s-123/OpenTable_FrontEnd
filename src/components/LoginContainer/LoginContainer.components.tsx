@@ -18,8 +18,7 @@ export default class LoginContainer extends Component<{}, { email: string, passw
     }
 
     sendLoginData() {
-        let credentials = { email: this.state.email, password: this.state.password };
-        console.log(credentials)
+        let credentials = {email: this.state.email, password: this.state.password};
         HttpService.request(HTTPMETHOD.POST, '/auth/login', credentials)
             .then(res => {
                 localStorage.setItem("jws", res.data.jws)
