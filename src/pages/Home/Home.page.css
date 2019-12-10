@@ -1,6 +1,5 @@
-.nav-div {
+.search-container {
     display: flex;
-    justify-content: space-between;
-    margin: 5px;
-    padding: 5px;
+    flex-flow: column;
+    align-items: center;
 }
