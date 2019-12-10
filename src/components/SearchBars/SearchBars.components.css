@@ -1,0 +1,17 @@
+
+
+input {
+    margin: 0 5px;
+    padding: 5px 20px;
+    font-size: 20px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 2px grey;
+}
+
+button {
+    margin: 10px;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    box-shadow: 5px 5px 2px grey;
+}
