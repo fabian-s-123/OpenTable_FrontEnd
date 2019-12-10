@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import "./LoginContainer.components.css"
 import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import { Redirect } from "react-router-dom"
+import SweetAlert from 'react-bootstrap-sweetalert'
 
-export default class LoginContainer extends Component<{}, { email: string, password: string, redirect: boolean }> {
+export default class LoginContainer extends Component<{}, { email: string, password: string, redirect: boolean, showAlert: boolean }> {
 
     constructor(props: any) {
         super(props);
@@ -11,18 +12,28 @@ export default class LoginContainer extends Component<{}, { email: string, passw
         this.state = {
             email: '',
             password: '',
-            redirect: false
+            redirect: false,
+            showAlert: false
         }
 
         this.sendLoginData = this.sendLoginData.bind(this);
+        this.onConfirm = this.onConfirm.bind(this);
+    }
+
+    onConfirm() {
+        this.setState({ redirect: !this.state.redirect })
+    }
+
+    showAlert() {
+        this.setState({ showAlert: !this.state.showAlert })
     }
 
     sendLoginData() {
-        let credentials = {email: this.state.email, password: this.state.password};
+        let credentials = { email: this.state.email, password: this.state.password };
         HttpService.request(HTTPMETHOD.POST, '/auth/login', credentials)
             .then(res => {
                 localStorage.setItem("jws", res.data.jws)
-                this.setState({ redirect: true })
+                this.showAlert()
             })
             .catch(err => {
                 console.log(err)
@@ -45,8 +56,19 @@ export default class LoginContainer extends Component<{}, { email: string, passw
                     <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange}></input>
                 </div>
                 <div>
+
                     {this.state.redirect ?
+
                         <Redirect to="/" /> : <button onClick={this.sendLoginData}>send login data</button>
+
+                    }
+
+                </div>
+                <div>
+                    {this.state.showAlert &&
+                        <SweetAlert success title="Success!" onConfirm={this.onConfirm}>
+                            You are loggedin!
+                        </SweetAlert>
                     }
                 </div>
             </div>
