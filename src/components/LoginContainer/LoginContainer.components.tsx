@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
 import "./LoginContainer.components.css"
 import HttpService, { HTTPMETHOD } from '../../services/http.services';
+import { Redirect } from "react-router-dom"
 
-export default class LoginContainer extends Component<{}, { email: string, password: string}> {
+export default class LoginContainer extends Component<{}, { email: string, password: string, redirect: boolean }> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            redirect: false
         }
 
         this.sendLoginData = this.sendLoginData.bind(this);
@@ -20,8 +22,8 @@ export default class LoginContainer extends Component<{}, { email: string, passw
         console.log(credentials)
         HttpService.request(HTTPMETHOD.POST, '/auth/login', credentials)
             .then(res => {
-                console.log(res)
-                // localStorage.setItem("jws", res.data.jwt) <--- not working at the moment (it should save the JWT token in the browsers local storage)
+                localStorage.setItem("jws", res.data.jws)
+                this.setState({ redirect: true })
             })
             .catch(err => {
                 console.log(err)
@@ -41,7 +43,9 @@ export default class LoginContainer extends Component<{}, { email: string, passw
             <div>
                 <input type="email" name="email" placeholder="E-mail" value={this.state.email} onChange={this.handleEmailChange}></input>
                 <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange}></input>
-                <button onClick={this.sendLoginData}>send login data</button>
+                {this.state.redirect ?
+                <Redirect to="/" />: <button onClick={this.sendLoginData}>send login data</button>
+            }
             </div>
         )
     }
