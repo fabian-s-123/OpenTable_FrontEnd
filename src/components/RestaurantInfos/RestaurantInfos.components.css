@@ -1,7 +1,10 @@
-.restaurant-info .id {
-    font-weight: 100;
+
+h1 {
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.restaurant-info .name {
-    font-weight: bold;
+h2 {
+    font-size: 8px;
+    font-style: italic;
 }

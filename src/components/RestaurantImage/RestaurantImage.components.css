@@ -3,9 +3,8 @@
     width: 100vw;
     margin-left: -20px;
     margin-right: 0;
-    opacity: 90%;
-    height: 30%;
-
+    opacity: 60%;
+    max-height: 30%;
 }
 
 .head-image {

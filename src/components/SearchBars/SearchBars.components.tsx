@@ -35,6 +35,8 @@ export default class SearchBars extends Component<{}, { restaurantData: any, sea
         if (this.state.searchLocation === '') {
             HttpService.request(HTTPMETHOD.GET, '/restaurants/name=' + this.state.searchName)
                 .then(response => {
+                    console.log(response)
+                    console.log(response.data)
                     this.getDataFromDb(response);
                 });
         } else {
