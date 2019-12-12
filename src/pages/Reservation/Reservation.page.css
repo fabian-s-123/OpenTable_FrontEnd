@@ -1,7 +1,17 @@
-.image-div {
+.image {
     width: 100%;
     width: 100vw;
-    margin-left: 0;
-    margin-right: 0;
-    text-align: center;
+
+}
+
+.restaurant-info {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    position: relative;
+}
+
+.reservation-form {
+    text-align: justify;
+    position: relative;
 }
