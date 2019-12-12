@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import "./SearchBars.components.css"
 import HttpService, { HTTPMETHOD } from '../../services/http.services';
+import DisplayRestaurants from '../DisplayRestaurants/DisplayRestaurants.components';
 
-export default class SearchBars extends Component<{}, { data: any, searchName: string, searchLocation: string }> {
+export default class SearchBars extends Component<{}, { restaurantData: any, searchName: string, searchLocation: string }> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            data: null,
+            restaurantData: null,
             searchName: '',
             searchLocation: ''
         }
@@ -27,7 +28,7 @@ export default class SearchBars extends Component<{}, { data: any, searchName: s
         } else {
             arr.push(response.data);
         }
-        this.setState({ data: arr })
+        this.setState({ restaurantData: arr })
     }
 
     loadRestaurantData() {
@@ -73,24 +74,7 @@ export default class SearchBars extends Component<{}, { data: any, searchName: s
                 <div className="search-button">
                     <button onClick={this.loadRestaurantData}>search</button>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Restaurant</th>
-                            <th>City</th>
-                            <th>ZIP</th>
-                        </tr>
-                    </thead>
-                    <tbody className="restaurant-item">
-                    {this.state.data && this.state.data.map((item: any) => {
-                        return (<tr key={item.id}>
-                            <td>{item.name}</td>
-                            <td>{item.city}</td>
-                            <td>{item.zip}</td>
-                        </tr>);
-                    })}
-                    </tbody>
-                </table>
+                <DisplayRestaurants searchData={this.state.restaurantData} />
             </div>
         )
     }

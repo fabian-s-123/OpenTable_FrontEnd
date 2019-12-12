@@ -7,6 +7,8 @@ import Reservation from './pages/Reservation/Reservation.page';
 import Topnav from './components/Topnav/Topnav.components';
 import './App.css';
 import LoginNav from './components/LoginNav/LoginNav.components';
+import Restaurant from './models/Restaurant';
+import RestaurantImage from './components/RestaurantImage/RestaurantImage.components'
 
 const history = createBrowserHistory();
 
