@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import "./ReservationOutput.components.css"
-import { Divider } from '@material-ui/core'
 
 export default class ReservationOutput extends Component<{ output: boolean }, {}> {
 
