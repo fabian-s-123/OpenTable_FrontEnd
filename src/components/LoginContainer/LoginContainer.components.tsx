@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 import "./LoginContainer.components.css"
 import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import { Redirect } from "react-router-dom"
@@ -15,21 +14,24 @@ import {
     Button
 } from "@material-ui/core";
 import * as yup from 'yup';
-import { Http2ServerResponse } from 'http2';
 
 const Mytextfield: React.FC<FieldAttributes<{}>> = ({
     placeholder,
+    type,
     ...props
 }) => {
     const [field, meta] = useField<{}>(props);
     const errorText = meta.error && meta.touched ? meta.error : '';
     return (
-        <TextField
-            placeholder={placeholder}
-            {...field}
-            helperText={errorText}
-            error={!!errorText}
-        />
+        <div>
+            <TextField
+                placeholder={placeholder}
+                type={type}
+                {...field}
+                helperText={errorText}
+                error={!!errorText}
+            />
+        </div>
     );
 };
 
@@ -50,7 +52,7 @@ export default class LoginContainer extends Component<{}, { email: string, passw
         this.onConfirm = this.onConfirm.bind(this);
     }
 
-    validationSchema = yup.object({
+    validationSchema = yup.object().shape({
         email: yup
             .string()
             .required()
@@ -80,9 +82,9 @@ export default class LoginContainer extends Component<{}, { email: string, passw
                 >
                     {({ isSubmitting }) => (
                         <Form>
-                            <Mytextfield placeholder='email' name="email" />
+                            <Mytextfield placeholder='email' name="email" type="email" />
                             <div>
-                                <Mytextfield type="password" placeholder="password" name="password" />
+                                <Mytextfield placeholder="password" name="password" type="password" />
                             </div>
                             <div>
                                 {this.state.showSuccessAlert &&
