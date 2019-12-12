@@ -7,6 +7,7 @@ import Restaurant from '../../models/Restaurant';
 export default class DisplayRestaurants extends Component<{ searchData: any }, {}> {
     constructor(props: any) {
         super(props)
+        
     }
 
     render() {
@@ -33,8 +34,7 @@ export default class DisplayRestaurants extends Component<{ searchData: any }, {
                                 }}>{item.name}</Link>
                                 </td>
                                 <td>{item.city}</td>
-                                <td>{item.zip}</td>
-                                
+                                <td>{item.zip}</td>     
                             </tr>
                             );
                         })}
