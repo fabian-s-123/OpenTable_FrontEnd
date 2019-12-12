@@ -15,19 +15,12 @@ export default class Reservation extends Component<{location: any},{}> {
         console.log(img)
         return (
             <div>
-<<<<<<< HEAD
                 <div className="image">
                     <RestaurantImage image={img} />
                 </div>
                 <div className="restaurant-info">
                     <RestaurantInfos restaurant={rest}/>
-=======
-                <div className="image-div">
-                    <RestaurantImage image={img} />
-                </div>
-                <div>
-                    <RestaurantInfos />Here you can make your Reservation!
->>>>>>> 618acb9ecc909531b3e2bd36e1e938689356ffa8
+
                 </div>
                 <div className="reservation-form">
                     <ReservationInput restaurant={rest}/>
