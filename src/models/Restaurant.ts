@@ -1,17 +1,19 @@
 
 export default class Restaurant {
+    id: number = 0;
     name: String = "";
-    id: String = "";
-    city: String = "";
-    zip: String = "";
-    country: String = "";
     address: String = "";
+    city: String = "";
+    country: String = "";
+    description: String = "";
     email: String = "";
+    menu: String = "";
+    socialMedia = "";
+    openingHours: String = "";
     telephone: String = "";
     website: String = "";
-    description: String = "";
-    
-
+    zip: String = "";
+    images: String = "";
 
 
     constructor() {

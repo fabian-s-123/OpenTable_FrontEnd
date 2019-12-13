@@ -35,6 +35,8 @@ export default class SearchBars extends Component<{}, { restaurantData: any, sea
         if (this.state.searchLocation === '') {
             HttpService.request(HTTPMETHOD.GET, '/restaurants/name=' + this.state.searchName)
                 .then(response => {
+                    console.log(response)
+                    console.log(response.data)
                     this.getDataFromDb(response);
                 });
         } else {
@@ -71,8 +73,8 @@ export default class SearchBars extends Component<{}, { restaurantData: any, sea
                     <input className="restaurant-name" type="text" placeholder="restaurant name" onChange={this.handleNameChange} />
                     <input className="restaurant-location" type="text" placeholder="location or ZIP" onChange={this.handleLocationChange} />
                 </div>
-                <div className="search-button">
-                    <button onClick={this.loadRestaurantData}>search</button>
+                <div>
+                    <button className="search-btn" onClick={this.loadRestaurantData}>search</button>
                 </div>
                 <DisplayRestaurants searchData={this.state.restaurantData} />
             </div>

@@ -1,0 +1,16 @@
+.image {
+    width: 100%;
+    width: 100vw;
+    margin-left: -20px;
+    margin-right: 0;
+    opacity: 60%;
+    max-height: 30%;
+}
+
+.head-image {
+    width: 100%;
+    width: 100vw;
+    margin-left: 0;
+    margin-right: 0;
+
+}
