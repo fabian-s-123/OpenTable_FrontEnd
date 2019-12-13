@@ -21,7 +21,7 @@ export default class RestaurantInfos extends Component<{}, { restaurant?: Restau
         this.setState({
             loading: true
         });
-        HttpService.request(HTTPMETHOD.GET,'/restaurants/1').then(response => {
+        HttpService.request(HTTPMETHOD.GET, '/restaurants/1').then(response => {
             if (response.status == 200 && response.data) {
                 this.setState({
                     restaurant: response.data,
@@ -50,8 +50,14 @@ export default class RestaurantInfos extends Component<{}, { restaurant?: Restau
 
         return (
             <div className="restaurant-info">
-            <div className="id">{this.state.restaurant.id}</div>
+                {/* <div>{JSON.stringify(this.state.restaurant)}</div> */}
                 <div className="name">{this.state.restaurant.name}</div>
+                <div>{this.state.restaurant.city}</div>
+                <div>{this.state.restaurant.website}</div>
+                <div>{this.state.restaurant.description}</div>
+
+
+
             </div>
         )
     }
