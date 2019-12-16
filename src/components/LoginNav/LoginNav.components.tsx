@@ -5,7 +5,7 @@ export default class LoginNav extends Component {
     render() {
         return (
             <div>
-                <a className="log-nav-link" href="http://localhost:3000/login">Login</a>
+                <a className="log-nav-link" href="http://localhost:3000/login">Sign In</a>
             </div>
 
         )

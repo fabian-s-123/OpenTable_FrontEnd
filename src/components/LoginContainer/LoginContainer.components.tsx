@@ -4,52 +4,35 @@ import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import { Redirect } from "react-router-dom"
 import SweetAlert from 'react-bootstrap-sweetalert'
 import {
-    Formik,
-    Form,
-    useField,
-    FieldAttributes
+    Formik
 } from "formik";
 import {
     TextField,
-    Button
+    Avatar,
+    Button,
+    CssBaseline,
+    FormControlLabel,
+    Checkbox,
+    Link,
+    Grid,
+    Container,
+    Typography
 } from "@material-ui/core";
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import * as yup from 'yup';
-import ClickButton from '../ClickButton/ClickButton.components';
 
-const Mytextfield: React.FC<FieldAttributes<{}>> = ({
-    placeholder,
-    type,
-    ...props
-}) => {
-    const [field, meta] = useField<{}>(props);
-    const errorText = meta.error && meta.touched ? meta.error : '';
-    return (
-        <div>
-            <TextField
-                placeholder={placeholder}
-                type={type}
-                {...field}
-                helperText={errorText}
-                error={!!errorText}
-            />
-        </div>
-    );
-};
 
-export default class LoginContainer extends Component<{ isSubmitting: any }, { email: string, password: string, redirect: boolean, showSuccessAlert: boolean, showFailAlert: boolean }> {
+export default class LoginContainer extends Component<{}, { redirect: boolean, showSuccessAlert: boolean, showFailAlert: boolean }> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            email: '',
-            password: '',
             redirect: false,
             showSuccessAlert: false,
             showFailAlert: false
         }
 
-        this.sendLoginData = this.sendLoginData.bind(this);
         this.onConfirm = this.onConfirm.bind(this);
     }
 
@@ -60,49 +43,8 @@ export default class LoginContainer extends Component<{ isSubmitting: any }, { e
             .email(),
         password: yup
             .string()
-            .required()
-    });
-
-    Sign: React.FC = () => {
-        return (
-            <div>
-                <Formik
-                    validateOnChange={true}
-                    initialValues={{
-                        email: '',
-                        password: ''
-                    }}
-                    validationSchema={this.validationSchema}
-                    onSubmit={(data, { setSubmitting }) => {
-                        setSubmitting(true);
-                        console.log('submit', data)
-                        setSubmitting(false);
-                        this.setState({email: data.email, password: data.password})
-                        this.sendLoginData()
-                    }}
-                >
-                    {({ isSubmitting }) => (
-                        <Form>
-                            <Mytextfield placeholder='email' name="email" type="email" />
-                            <div>
-                                <Mytextfield placeholder="password" name="password" type="password" />
-                            </div>
-                            <div>
-                                {this.state.showSuccessAlert &&
-                                    <SweetAlert success title="Success!" onConfirm={this.onConfirm} timeout={3000}>
-                                        You are loggedin!
-                        </SweetAlert>
-                                }
-                            </div>
-                            <div>
-                            {this.state.redirect ? <Redirect to="/" /> : <ClickButton onClick={isSubmitting} >submit</ClickButton> }
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
-            </div>
-        )
-    }
+            .required(),
+    })
 
     onConfirm() {
         this.setState({ redirect: !this.state.redirect })
@@ -113,10 +55,10 @@ export default class LoginContainer extends Component<{ isSubmitting: any }, { e
     }
 
     onFailConfirm: React.FC = () => {
-        return(
+        return (
             <div>
                 {this.setState({ showFailAlert: !this.state.showFailAlert })}
-            <Redirect to="/login" />
+                <Redirect to="/login" />
             </div>
         )
     }
@@ -125,36 +67,116 @@ export default class LoginContainer extends Component<{ isSubmitting: any }, { e
         this.setState({ showFailAlert: !this.state.showFailAlert })
     }
 
-    sendLoginData() {
-        let credentials = { email: this.state.email, password: this.state.password };
-        HttpService.request(HTTPMETHOD.POST, '/auth/login', credentials)
-            .then(res => {
-                localStorage.setItem("jws", res.data.jws)
-                localStorage.setItem("user", res.data.id)
-                this.showSuccessAlert()
-            })
-            .catch(err => {
-                this.showFailAlert()
-                console.log(err)
-            })
-    }
 
     render() {
         return (
             <div className="login-components">
-                <this.Sign />
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div id="paper">
+                        <Avatar id="avatar">
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Sign in
+                    </Typography>
+                        <Formik
+                            validateOnChange={true}
+                            initialValues={{
+                                email: '',
+                                password: '',
+                            }}
+                            validationSchema={this.validationSchema}
+                            onSubmit={values => {
+                                HttpService.request(HTTPMETHOD.POST, '/auth/login', values)
+                                    .then(res => {
+                                        localStorage.setItem("jws", res.data.jws)
+                                        localStorage.setItem("user", res.data.id)
+                                        this.showSuccessAlert()
+                                    })
+                                    .catch(err => {
+                                        this.showFailAlert()
+                                        console.log(err)
+                                    })
+                            }}
+                        >
+                            {({ errors, handleSubmit, handleChange, handleBlur, values }) => (
+                                <form id='form' onSubmit={handleSubmit}>
+                                    <label htmlFor="email"></label>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                        autoFocus
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.email}
+                                        helperText={errors.email}
+                                        error={!!errors.email}
+                                    />
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="password"
+                                        autoComplete="current-password"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.password}
+                                        helperText={errors.password}
+                                        error={!!errors.password}
+                                    />
+                                    <FormControlLabel
+                                        control={<Checkbox value="remember" color="primary" />}
+                                        label="Remember me"
+                                    />
+                                    {this.state.redirect ? <Redirect to="/" /> : <Button
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        id="submit"
+                                        type='submit'
+                                    >
+                                        Sign In
+                                </Button>
+                                    }
+                                    <Grid container>
+                                        <Grid item xs>
+                                            <Link href="#" variant="body2">
+                                                Forgot password?
+                                        </Link>
+                                        </Grid>
+                                        <Grid item>
+                                            <Link href="#" variant="body2">
+                                                {"Don't have an account? Sign Up"}
+                                            </Link>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+                            )}
+                        </Formik>
+                    </div>
+                </Container >
                 <div>
                     {this.state.showSuccessAlert &&
                         <SweetAlert success title="Success!" onConfirm={this.onConfirm} timeout={3000}>
                             You are loggedin!
-                        </SweetAlert>
+                                    </SweetAlert>
                     }
                 </div>
                 <div>
                     {this.state.showFailAlert &&
                         <SweetAlert title="Login failed!" onConfirm={this.onFailConfirm}>
                             Please check your e-mail and password!
-                        </SweetAlert>
+                                    </SweetAlert>
                     }
                 </div>
             </div>

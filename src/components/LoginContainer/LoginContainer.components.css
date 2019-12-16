@@ -1,4 +1,4 @@
-.login-components {
+/* .login-components {
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -72,4 +72,25 @@ button:hover {
     cursor: pointer;
     background-color: white;
     color: rgb(70, 153, 179);
+} */
+
+#paper {
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#avatar {
+    margin: 8px;
+    background-color: rgb(220, 0, 78);
+}
+
+#form {
+    width: 100%;
+    margin-top: 8px;
+}
+
+#submit {
+    margin: 24px 0px 16px;
 }
