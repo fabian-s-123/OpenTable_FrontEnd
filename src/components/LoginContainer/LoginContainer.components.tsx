@@ -14,6 +14,7 @@ import {
     Button
 } from "@material-ui/core";
 import * as yup from 'yup';
+import ClickButton from '../ClickButton/ClickButton.components';
 
 const Mytextfield: React.FC<FieldAttributes<{}>> = ({
     placeholder,
@@ -35,7 +36,7 @@ const Mytextfield: React.FC<FieldAttributes<{}>> = ({
     );
 };
 
-export default class LoginContainer extends Component<{}, { email: string, password: string, redirect: boolean, showSuccessAlert: boolean, showFailAlert: boolean }> {
+export default class LoginContainer extends Component<{ isSubmitting: any }, { email: string, password: string, redirect: boolean, showSuccessAlert: boolean, showFailAlert: boolean }> {
 
     constructor(props: any) {
         super(props);
@@ -94,9 +95,7 @@ export default class LoginContainer extends Component<{}, { email: string, passw
                                 }
                             </div>
                             <div>
-                                {this.state.redirect ? <Redirect to="/" /> : <Button disabled={isSubmitting} type="submit">
-                                    submit
-                                </Button>}
+                            {this.state.redirect ? <Redirect to="/" /> : <ClickButton onClick={isSubmitting} >submit</ClickButton> }
                             </div>
                         </Form>
                     )}
