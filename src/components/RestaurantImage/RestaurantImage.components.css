@@ -1,16 +1,25 @@
-.image {
-    width: 100%;
-    width: 100vw;
-    margin-left: -20px;
-    margin-right: 0;
-    opacity: 60%;
-    max-height: 30%;
+.image-outer-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 85%;
+    background-image: url("./images/OpenTable-Logo_2.png");
 }
 
 .head-image {
     width: 100%;
-    width: 100vw;
-    margin-left: 0;
-    margin-right: 0;
+    margin: auto;
+}
 
+
+
+.image-text-box {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 96px;
+    font-style: italic;
+    backdrop-filter: blur(4px);
 }
