@@ -1,10 +1,17 @@
-th, tr, td {
-    border: 1px solid black;
-    padding: 5px 10px;
+Table {
+    counter-reset: rowNumber;
 }
 
-table {
-    border: 1px solid black;
-    margin: 20px;
-    box-shadow: 5px 5px 2px grey;
+Table tr {
+    counter-increment: rowNumber;
+}
+
+Table tr td:first-child::before {
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+
+.display-container {
+    margin-top: 20px;
 }

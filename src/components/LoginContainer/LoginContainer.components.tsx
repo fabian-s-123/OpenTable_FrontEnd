@@ -67,6 +67,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
         this.setState({ showFailAlert: !this.state.showFailAlert })
     }
 
+    // Sign in - Form is copied from: https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/templates/sign-in/SignIn.js
 
     render() {
         return (
@@ -102,7 +103,6 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                         >
                             {({ errors, handleSubmit, handleChange, handleBlur, values }) => (
                                 <form id='form' onSubmit={handleSubmit}>
-                                    <label htmlFor="email"></label>
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
@@ -174,7 +174,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                 </div>
                 <div>
                     {this.state.showFailAlert &&
-                        <SweetAlert title="Login failed!" onConfirm={this.onFailConfirm}>
+                        <SweetAlert warning title="Login failed!" onConfirm={this.onFailConfirm}>
                             Please check your e-mail and password!
                                     </SweetAlert>
                     }

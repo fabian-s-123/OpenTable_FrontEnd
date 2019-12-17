@@ -3,43 +3,43 @@ import "./DisplayRestaurants.components.css"
 import '../SearchBars/SearchBars.components'
 import { Link } from 'react-router-dom'
 import Restaurant from '../../models/Restaurant';
+// @ts-ignore
+import { Table, Tr } from 'styled-table-component';
+
 
 export default class DisplayRestaurants extends Component<{ searchData: any }, {}> {
-    constructor(props: any) {
-        super(props)
-        
-    }
 
     render() {
         return (
-            <div>
-                <table>
+            <div className="display-container">
+                <Table theadLight>
                     <thead>
                         <tr>
-                            <th>Restaurant</th>
-                            <th>City</th>
-                            <th>ZIP</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Restaurant Name</th>
+                            <th scope="col">Restaurant Location</th>
                         </tr>
                     </thead>
-                    <tbody className="restaurant-item">
+                    <tbody>
                         {this.props.searchData && this.props.searchData.map((item: Restaurant, key: number) => {
+                            console.log(key)
                             return (
-                            <tr key={key}>
-                                <td>
-                                <Link to={{
-                                    pathname: "/reservation",
-                                    state: {
-                                        data: item
-                                    }
-                                }}>{item.name}</Link>
-                                </td>
-                                <td>{item.city}</td>
-                                <td>{item.zip}</td>     
-                            </tr>
+                                <tr key={key}>
+                                    <th scope="row">{key + 1}</th>
+                                    <td>
+                                        <Link to={{
+                                            pathname: "/reservation",
+                                            state: {
+                                                data: item
+                                            }
+                                        }}>{item.name}</Link>
+                                    </td>
+                                    <td>{item.city}, {item.zip}</td>
+                                </tr>
                             );
                         })}
                     </tbody>
-                </table>
+                </Table>
             </div>
         )
     }
