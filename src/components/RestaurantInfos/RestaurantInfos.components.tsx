@@ -18,7 +18,7 @@ export default class RestaurantInfos extends Component<{ restaurant: Restaurant 
         this.setState({
             loading: true
         });
-        HttpService.request(HTTPMETHOD.GET,'/restaurants/1').then(response => {
+        HttpService.request(HTTPMETHOD.GET, '/restaurants/1').then(response => {
             if (response.status == 200 && response.data) {
                 this.setState({
                     restaurant: response.data,
