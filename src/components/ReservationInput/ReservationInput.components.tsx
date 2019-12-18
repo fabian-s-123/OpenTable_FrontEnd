@@ -5,15 +5,26 @@ import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import ReservationOutput from '../ReservationOutput/ReservationOutput.components';
 import Loader from 'react-loader-spinner'
+import { Formik } from 'formik';
+import { TextField, Button } from '@material-ui/core';
+import * as yup from 'yup';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDateTimePicker
+} from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-export default class ReservationInput extends Component<{ restaurant: Restaurant }, { groupSize: any, time: any, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
+
+
+export default class ReservationInput extends Component<{ restaurant: Restaurant }, { time: string, currentDate: MaterialUiPickersDate, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
-            groupSize: '',
             time: '',
+            currentDate: new Date(),
             showSuccessAlert: false,
             showFailAlert: false,
             showRestaurantOutput: false,
@@ -24,23 +35,31 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
         this.submitReservationData = this.submitReservationData.bind(this)
     }
 
-    handleGroupSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            groupSize: e.target.valueAsNumber
-        });
+    validationSchema = yup.object().shape({
+        groupSize: yup
+            .number()
+            .max(30),
+        date: yup
+            .date(),
+    })
+
+    convert(str: string) {
+        var date = new Date(str),
+            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+            day = ("0" + date.getDate()).slice(-2),
+            hrs = ("0" + date.getHours()).slice(-2),
+            mns = ("0" + date.getMinutes()).slice(-2);
+        return [date.getFullYear(), mnth, day].join("-") + "T" + [hrs, mns].join(":");
     }
 
-    handleReservationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            time: e.target.value
-        });
-        e.preventDefault()
-    }
-
-    submitReservationData() {
+    submitReservationData(values: any) {
         this.setState({ isLoading: true })
-        let credentials = { restaurantId: this.props.restaurant.id, customerId: localStorage.getItem("user"), startDateTime: this.state.time + ':00.000+01:00', groupSize: this.state.groupSize };
-        console.log(credentials)
+        let credentials = {
+            restaurantId: this.props.restaurant.id,
+            customerId: localStorage.getItem("user"),
+            startDateTime: this.convert(values.date) + ':00.000+01:00',
+            groupSize: values.groupSize
+        };
         HttpService.request(HTTPMETHOD.POST, '/customerReservations', credentials)
             .then(res => {
                 this.setState({
@@ -73,44 +92,85 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
     }
 
     render() {
-        const rest = this.props.restaurant;
-        console.log(rest)
         return (
-            <div>
-                <h1>Make a reservation!</h1>
+            <div className="reservation-input-container">
+                {this.state.isLoading ? <div className="sweet-loading">
+                    <Loader type="ThreeDots" color="#2BAD60" />
+                </div> :
+                    <Formik
+                        validateOnChange={true}
+                        validationSchema={this.validationSchema}
+                        initialValues={{
+                            groupSize: '',
+                            date: new Date(),
+                        }}
+                        onSubmit={values => {
+                            this.submitReservationData(values)
+                        }}
+                    >
+                        {({ handleSubmit, handleChange, values, setFieldValue }) => (
+                            <form id='form' onSubmit={handleSubmit}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    name="groupSize"
+                                    label="Number of Guests"
+                                    type="number"
+                                    inputProps={{ min: "1", max: "30", step: "1" }}
+                                    autoComplete="groupSize"
+                                    autoFocus
+                                    onChange={handleChange}
+                                    value={values.groupSize}
+                                />
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDateTimePicker
+                                        autoOk
+                                        margin="normal"
+                                        fullWidth
+                                        ampm={false}
+                                        label="Date and Time"
+                                        variant="inline"
+                                        format="yyyy/MM/dd HH:mm"
+                                        inputVariant="outlined"
+                                        autoComplete="date"
+                                        autoFocus
+                                        minutesStep={15}
+                                        minDate={new Date()}
+                                        value={values.date}
+                                        onChange={e => setFieldValue('date', e)}
+                                    />
+                                </MuiPickersUtilsProvider>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    id="submit"
+                                    type='submit'
+                                >
+                                    Submit
+                                        </Button>
+                            </form>
+                        )}
+                    </Formik>
+                }
                 <div>
-                    {this.state.isLoading ? <div className="sweet-loading">
-                        <Loader type="ThreeDots" color="#2BAD60" />
-                    </div> : <div>
-                            <div className="submit-form">
-                                <input type="number" placeholder="how many people?" value={this.state.groupSize} onChange={this.handleGroupSizeChange.bind(this)}></input>
-                            </div>
-                            <div className="submit-form">
-                                <input type="datetime-local" placeholder="when?" value={this.state.time} onChange={this.handleReservationTimeChange.bind(this)}></input>
-                            </div>
-                            <div>
-                                <button className="submit-reservation" onClick={this.submitReservationData}>Submit</button>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div>
-                    {
-                        this.state.showSuccessAlert && <SweetAlert success title="Success!" onConfirm={this.onConfirm.bind(this)} timeout={3000}>
+                    {this.state.showSuccessAlert &&
+                        <SweetAlert success title="Success!" onConfirm={this.onConfirm.bind(this)} timeout={3000}>
                             Reservation confirmed!
                     </SweetAlert>
                     }
                 </div>
                 <div>
-                    {
-                        this.state.showFailAlert && <SweetAlert warning title="Failed!" onConfirm={this.onFailConfirm.bind(this)} timeout={3000}>
+                    {this.state.showFailAlert &&
+                        <SweetAlert warning title="Failed!" onConfirm={this.onFailConfirm.bind(this)} timeout={3000}>
                             Sorry, reservation not possible!
                     </SweetAlert>
                     }
                 </div>
-                {this.state.showRestaurantOutput && <div>
-                    <ReservationOutput output={this.state.isSuccessfull} />
-                </div>}
+                {this.state.showRestaurantOutput &&
+                    <div>
+                        <ReservationOutput output={this.state.isSuccessfull} />
+                    </div>}
             </div>
         )
     }

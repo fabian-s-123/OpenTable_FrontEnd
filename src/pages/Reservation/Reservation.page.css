@@ -12,6 +12,7 @@
 }
 
 .reservation-form {
-    text-align: justify;
-    position: relative;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
 }

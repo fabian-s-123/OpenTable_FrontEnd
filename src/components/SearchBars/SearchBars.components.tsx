@@ -2,19 +2,38 @@ import React, { Component } from 'react'
 import "./SearchBars.components.css"
 import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import DisplayRestaurants from '../DisplayRestaurants/DisplayRestaurants.components';
+import { Formik, ErrorMessage } from 'formik';
+import { TextField, Button } from '@material-ui/core';
+// @ts-ignore
+import { Table, Tr } from 'styled-table-component';
+import { storiesOf } from '@storybook/react';
+import * as yup from 'yup';
+import RestaurantHttpService from '../../services/restaurant.http.service';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
-export default class SearchBars extends Component<{}, { restaurantData: any, searchName: string, searchLocation: string }> {
+
+export default class SearchBars extends Component<{onSearchPerfomed: any}, { restaurantData: any, showFailAlert: boolean }> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
             restaurantData: null,
-            searchName: '',
-            searchLocation: ''
+            showFailAlert: false
         }
+    }
 
-        this.loadRestaurantData = this.loadRestaurantData.bind(this)
+    validationSchema = yup.object().shape({
+        name: yup
+            .string(),
+        city: yup
+            .string(),
+        zip: yup
+            .string(),
+    })
+
+    showFailAlert() {
+        this.setState({ showFailAlert: !this.state.showFailAlert })
     }
 
     getDataFromDb(response: any) {
@@ -29,54 +48,80 @@ export default class SearchBars extends Component<{}, { restaurantData: any, sea
             arr.push(response.data);
         }
         this.setState({ restaurantData: arr })
+        this.props.onSearchPerfomed(arr);
     }
 
-    loadRestaurantData() {
-        if (this.state.searchLocation === '') {
-            HttpService.request(HTTPMETHOD.GET, '/restaurants/name=' + this.state.searchName)
-                .then(response => {
-                    console.log(response)
-                    console.log(response.data)
-                    this.getDataFromDb(response);
-                });
+    loadRestaurantData(values: any) {
+        console.log(values)
+        if (values.location == '' && values.name == '') {
+            this.showFailAlert()
         } else {
-            this.getDataFromCityOrZip();
+            RestaurantHttpService.getRestaurants(values, (response: any) => {
+                this.getDataFromDb(response);
+            })
         }
-    }
-
-    getDataFromCityOrZip() {
-        HttpService.request(HTTPMETHOD.GET, '/restaurants/city=""/zip=' + this.state.searchLocation)
-            .then(response => {
-                if (response.data.length === 0) {
-                    HttpService.request(HTTPMETHOD.GET, '/restaurants/city=' + this.state.searchLocation + '/zip=' + '""')
-                        .then(response => {
-                            this.getDataFromDb(response);
-                        })
-                } else {
-                    this.getDataFromDb(response);
-                }
-            });
-    }
-
-    handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ searchName: e.target.value })
-    }
-
-    handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ searchLocation: e.target.value })
     }
 
     render() {
         return (
             <div className="search-container">
-                <div className="search-input">
-                    <input className="restaurant-name" type="text" placeholder="restaurant name" onChange={this.handleNameChange} />
-                    <input className="restaurant-location" type="text" placeholder="location or ZIP" onChange={this.handleLocationChange} />
-                </div>
+                <Formik
+                    validateOnChange={true}
+                    validationSchema={this.validationSchema}
+                    initialValues={{
+                        name: '',
+                        location: '',
+                    }}
+                    onSubmit={values => {
+                        this.loadRestaurantData(values)
+                    }}
+                >
+                    {({ handleSubmit, handleChange, handleBlur, values }) => (
+                        <form id='form' onSubmit={handleSubmit}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                name="name"
+                                label="restaurant-name"
+                                autoComplete="name"
+                                autoFocus
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.name}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                name="location"
+                                label="city-or-zip"
+                                autoComplete="location"
+                                autoFocus
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.location}
+                            />
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                id="submit"
+                                type='submit'
+                            >
+                                Submit
+                                </Button>
+                        </form>
+                    )}
+                </Formik>
                 <div>
-                    <button className="search-btn" onClick={this.loadRestaurantData}>search</button>
+                {this.state.showFailAlert &&
+                    <SweetAlert warning title="No Data!" onConfirm={this.showFailAlert.bind(this)}>
+                        Restaurant or Location input needed!
+                                    </SweetAlert>
+                }
+
                 </div>
-                <DisplayRestaurants searchData={this.state.restaurantData} />
             </div>
         )
     }
