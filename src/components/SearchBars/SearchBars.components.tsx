@@ -66,7 +66,7 @@ export default class SearchBars extends Component<{onSearchPerfomed: any}, { res
         return (
             <div className="search-container">
                 <Formik
-                    validateOnChange={false}
+                    validateOnChange={true}
                     validationSchema={this.validationSchema}
                     initialValues={{
                         name: '',

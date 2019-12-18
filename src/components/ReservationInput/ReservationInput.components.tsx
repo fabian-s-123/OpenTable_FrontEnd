@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import "./ReservationInput.components.css"
 import Restaurant from '../../models/Restaurant';
 import HttpService, { HTTPMETHOD } from '../../services/http.services';
@@ -6,17 +6,25 @@ import SweetAlert from 'react-bootstrap-sweetalert'
 import ReservationOutput from '../ReservationOutput/ReservationOutput.components';
 import Loader from 'react-loader-spinner'
 import { Formik } from 'formik';
-import { TextField, Button, Input } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import * as yup from 'yup';
-// @ts-ignore
-import ReactTimePicker from "react-ts-timepicker";
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDateTimePicker
+} from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-export default class ReservationInput extends Component<{ restaurant: Restaurant }, { showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
+
+
+export default class ReservationInput extends Component<{ restaurant: Restaurant }, { time: string, currentDate: MaterialUiPickersDate, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
 
     constructor(props: any) {
         super(props);
 
         this.state = {
+            time: '',
+            currentDate: new Date(),
             showSuccessAlert: false,
             showFailAlert: false,
             showRestaurantOutput: false,
@@ -29,15 +37,29 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
 
     validationSchema = yup.object().shape({
         groupSize: yup
-            .number(),
-        time: yup
-            .string(),
+            .number()
+            .max(30),
+        date: yup
+            .date(),
     })
+
+    convert(str: string) {
+        var date = new Date(str),
+            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+            day = ("0" + date.getDate()).slice(-2),
+            hrs = ("0" + date.getHours()).slice(-2),
+            mns = ("0" + date.getMinutes()).slice(-2);
+        return [date.getFullYear(), mnth, day].join("-") + "T" + [hrs, mns].join(":");
+    }
 
     submitReservationData(values: any) {
         this.setState({ isLoading: true })
-        let credentials = { restaurantId: this.props.restaurant.id, customerId: localStorage.getItem("user"), startDateTime: values.time + ':00.000+01:00', groupSize: values.groupSize };
-        console.log(credentials)
+        let credentials = {
+            restaurantId: this.props.restaurant.id,
+            customerId: localStorage.getItem("user"),
+            startDateTime: this.convert(values.date) + ':00.000+01:00',
+            groupSize: values.groupSize
+        };
         HttpService.request(HTTPMETHOD.POST, '/customerReservations', credentials)
             .then(res => {
                 this.setState({
@@ -69,75 +91,68 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
         })
     }
 
-
-
     render() {
-        const rest = this.props.restaurant;
-        console.log(rest)
         return (
-            <div>
-                <h1>Make a reservation!</h1>
-                <div>
-                    {this.state.isLoading ? <div className="sweet-loading">
-                        <Loader type="ThreeDots" color="#2BAD60" />
-                    </div> : <div>
-                            <Formik
-                                validationSchema={this.validationSchema}
-                                initialValues={{
-                                    groupSize: '',
-                                    date: '',
-                                    time: '',
-                                }}
-                                onSubmit={values => {
-                                    this.submitReservationData(values)
-                                }}
-                            >
-                                {({ handleSubmit, handleChange, handleBlur, values }) => (
-                                    <form id='form' onSubmit={handleSubmit}>
-
-{/*                                         not working!!!!
-
-                                        <TextField
-                                            variant="outlined"
-                                            fullWidth
-                                            name="number"
-                                            label="Number of Guests"
-                                            type="number"
-                                            inputProps={{ step: "1" }}
-                                            autoComplete="number"
-                                            autoFocus
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            value={values.groupSize}
-                                        />
-                                        <ReactTimePicker
-                                            onChange={handleChange}
-                                            value={values.time}
-                                        /> */}
-                                        <Button
-                                            fullWidth
-                                            variant="contained"
-                                            color="primary"
-                                            id="submit"
-                                            type='submit'
-                                        >
-                                            Submit
-                                </Button>
-                                    </form>
-                                )}
-                            </Formik>
-                            {/*                             <div className="submit-form">
-                                <input type="number" placeholder="how many people?" value={this.state.groupSize} onChange={this.handleGroupSizeChange.bind(this)}></input>
-                            </div>
-                            <div className="submit-form">
-                                <input type="datetime-local" placeholder="when?" value={this.state.time} onChange={this.handleReservationTimeChange.bind(this)}></input>
-                            </div>
-                            <div>
-                                <button className="submit-reservation" onClick={this.submitReservationData}>Submit</button>
-                            </div> */}
-                        </div>
-                    }
-                </div>
+            <div className="reservation-input-container">
+                {this.state.isLoading ? <div className="sweet-loading">
+                    <Loader type="ThreeDots" color="#2BAD60" />
+                </div> :
+                    <Formik
+                        validateOnChange={true}
+                        validationSchema={this.validationSchema}
+                        initialValues={{
+                            groupSize: '',
+                            date: new Date(),
+                        }}
+                        onSubmit={values => {
+                            this.submitReservationData(values)
+                        }}
+                    >
+                        {({ handleSubmit, handleChange, values, setFieldValue }) => (
+                            <form id='form' onSubmit={handleSubmit}>
+                                <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    name="groupSize"
+                                    label="Number of Guests"
+                                    type="number"
+                                    inputProps={{ min: "1", max: "30", step: "1" }}
+                                    autoComplete="groupSize"
+                                    autoFocus
+                                    onChange={handleChange}
+                                    value={values.groupSize}
+                                />
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <KeyboardDateTimePicker
+                                        autoOk
+                                        margin="normal"
+                                        fullWidth
+                                        ampm={false}
+                                        label="Date and Time"
+                                        variant="inline"
+                                        format="yyyy/MM/dd HH:mm"
+                                        inputVariant="outlined"
+                                        autoComplete="date"
+                                        autoFocus
+                                        minutesStep={15}
+                                        minDate={new Date()}
+                                        value={values.date}
+                                        onChange={e => setFieldValue('date', e)}
+                                    />
+                                </MuiPickersUtilsProvider>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    id="submit"
+                                    type='submit'
+                                >
+                                    Submit
+                                        </Button>
+                            </form>
+                        )}
+                    </Formik>
+                }
                 <div>
                     {this.state.showSuccessAlert &&
                         <SweetAlert success title="Success!" onConfirm={this.onConfirm.bind(this)} timeout={3000}>
