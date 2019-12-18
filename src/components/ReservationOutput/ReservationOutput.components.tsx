@@ -9,6 +9,7 @@ export default class ReservationOutput extends Component<{ output: boolean }, {}
     }
 
     render() {
+        console.log(this.props.output)
         return (
             <div>
                 {this.props.output ? <div>Reservation successfull!</div> : <div>Reservation failed!</div>}

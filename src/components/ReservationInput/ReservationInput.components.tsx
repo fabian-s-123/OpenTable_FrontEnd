@@ -17,7 +17,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 
 
-export default class ReservationInput extends Component<{ restaurant: Restaurant }, { time: string, currentDate: MaterialUiPickersDate, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
+export default class ReservationInput extends Component<{ restaurant: Restaurant, onReservation: any }, { time: string, currentDate: MaterialUiPickersDate, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
 
     constructor(props: any) {
         super(props);
@@ -76,14 +76,16 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
     }
 
     onConfirm() {
+        this.props.onReservation(true);
         this.setState({
             showSuccessAlert: false,
             showRestaurantOutput: true,
             isSuccessfull: true
-        })
+        });
     }
 
     onFailConfirm() {
+        this.props.onReservation(false);
         this.setState({
             showFailAlert: false,
             isSuccessfull: false,
@@ -167,10 +169,6 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
                     </SweetAlert>
                     }
                 </div>
-                {this.state.showRestaurantOutput &&
-                    <div>
-                        <ReservationOutput output={this.state.isSuccessfull} />
-                    </div>}
             </div>
         )
     }
