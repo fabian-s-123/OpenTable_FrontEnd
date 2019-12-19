@@ -74,7 +74,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                             Sign in
                     </Typography>
                         <Formik
-                            validateOnChange={true}
+                            validateOnChange={false}
                             initialValues={{
                                 email: '',
                                 password: '',
@@ -92,22 +92,20 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                                     })
                             }}
                         >
-                            {({ errors, handleSubmit, handleChange, handleBlur, values }) => (
+                            {({ handleSubmit, handleChange, values }) => (
                                 <form id='form' onSubmit={handleSubmit}>
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
                                         fullWidth
+                                        required
                                         id="email"
                                         label="Email Address"
                                         name="email"
                                         autoComplete="email"
                                         autoFocus
                                         onChange={handleChange}
-                                        onBlur={handleBlur}
                                         value={values.email}
-                                        helperText={errors.email}
-                                        error={!!errors.email}
                                     />
                                     <TextField
                                         variant="outlined"
@@ -120,10 +118,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                                         id="password"
                                         autoComplete="current-password"
                                         onChange={handleChange}
-                                        onBlur={handleBlur}
                                         value={values.password}
-                                        helperText={errors.password}
-                                        error={!!errors.password}
                                     />
                                     <FormControlLabel
                                         control={<Checkbox value="remember" color="primary" />}
@@ -137,7 +132,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                                         type='submit'
                                     >
                                         Sign In
-                                </Button>
+                                    </Button>
                                     }
                                     <Grid container>
                                         <Grid item xs>
@@ -146,7 +141,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                                         </Link>
                                         </Grid>
                                         <Grid item>
-                                            <Link href="#" variant="body2">
+                                            <Link href="/registration" variant="body2">
                                                 {"Don't have an account? Sign Up"}
                                             </Link>
                                         </Grid>

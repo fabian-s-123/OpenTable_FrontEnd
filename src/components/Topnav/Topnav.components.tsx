@@ -6,6 +6,10 @@ export default class Topnav extends Component {
         return (
             <div className="topnav">
                 <a href="http://localhost:3000/">Home</a>
+                <div className="sign">
+                    <a href="http://localhost:3000/login">Sign In</a>
+                    <a href="http://localhost:3000/registration">Sign Up</a>
+                </div>
             </div>
         )
     }

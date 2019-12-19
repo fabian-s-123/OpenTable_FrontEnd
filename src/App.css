@@ -25,12 +25,14 @@
     padding: 20px;
 }
 
-.nav-container {
+.topnav-container {
     position: sticky;
     top: 0;
     background-color: #63A2E6;
-    display: flex;
-    justify-content: space-between;
     padding: 10px;
     z-index: 5;
+}
+
+.sign-container {
+    flex-flow: column;
 }

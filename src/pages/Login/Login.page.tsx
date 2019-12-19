@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import "./Login.page.css";
 import LoginContainer from '../../components/LoginContainer/LoginContainer.components';
-import SingupForm from '../../components/LoginContainer/LoginContainer.components';
 
-export default class Login extends Component<{ },{}> {
+export default class Login extends Component<{},{}> {
     render() {
         return (
             <div className="login-container">
-                <SingupForm />
+                <LoginContainer />
             </div>
         )
     }
