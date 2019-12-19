@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
 import "./SearchBars.components.css"
-import HttpService, { HTTPMETHOD } from '../../services/http.services';
-import DisplayRestaurants from '../DisplayRestaurants/DisplayRestaurants.components';
-import { Formik, ErrorMessage } from 'formik';
+import { Formik } from 'formik';
 import { TextField, Button } from '@material-ui/core';
-// @ts-ignore
-import { Table, Tr } from 'styled-table-component';
-import { storiesOf } from '@storybook/react';
 import * as yup from 'yup';
 import RestaurantHttpService from '../../services/restaurant.http.service';
 import SweetAlert from 'react-bootstrap-sweetalert';

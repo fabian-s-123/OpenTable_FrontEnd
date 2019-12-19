@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import "./ReservationInput.components.css"
 import Restaurant from '../../models/Restaurant';
-import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import SweetAlert from 'react-bootstrap-sweetalert'
-import ReservationOutput from '../ReservationOutput/ReservationOutput.components';
 import Loader from 'react-loader-spinner'
 import { Formik } from 'formik';
 import { TextField, Button } from '@material-ui/core';
@@ -14,10 +12,11 @@ import {
     KeyboardDateTimePicker
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import ReservationHttpService from '../../services/reservation.http.service';
 
 
 
-export default class ReservationInput extends Component<{ restaurant: Restaurant }, { time: string, currentDate: MaterialUiPickersDate, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
+export default class ReservationInput extends Component<{ restaurant: Restaurant, onReservation: any }, { time: string, currentDate: MaterialUiPickersDate, showSuccessAlert: boolean, showFailAlert: boolean, showRestaurantOutput: boolean, isSuccessfull: boolean, isLoading: boolean }> {
 
     constructor(props: any) {
         super(props);
@@ -60,30 +59,32 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
             startDateTime: this.convert(values.date) + ':00.000+01:00',
             groupSize: values.groupSize
         };
-        HttpService.request(HTTPMETHOD.POST, '/customerReservations', credentials)
+
+        ReservationHttpService.makeReservation(credentials)
             .then(res => {
-                this.setState({
-                    showSuccessAlert: true,
-                    isLoading: false
-                })
+                this.setState({ showSuccessAlert: true })
             })
             .catch(err => {
-                console.log(err)
+                this.setState({ showSuccessAlert: true })
+            })
+            .finally(() => {
                 this.setState({
-                    showFailAlert: true
+                    isLoading: false
                 })
             })
     }
 
     onConfirm() {
+        this.props.onReservation(true);
         this.setState({
             showSuccessAlert: false,
             showRestaurantOutput: true,
             isSuccessfull: true
-        })
+        });
     }
 
     onFailConfirm() {
+        this.props.onReservation(false);
         this.setState({
             showFailAlert: false,
             isSuccessfull: false,
@@ -167,10 +168,6 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
                     </SweetAlert>
                     }
                 </div>
-                {this.state.showRestaurantOutput &&
-                    <div>
-                        <ReservationOutput output={this.state.isSuccessfull} />
-                    </div>}
             </div>
         )
     }
