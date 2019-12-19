@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import "./LoginContainer.components.css"
-import HttpService, { HTTPMETHOD } from '../../services/http.services';
 import { Redirect } from "react-router-dom"
 import SweetAlert from 'react-bootstrap-sweetalert'
 import {
@@ -20,6 +19,7 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import * as yup from 'yup';
+import LoginHttpService from '../../services/login.http.service';
 
 
 export default class LoginContainer extends Component<{}, { redirect: boolean, showSuccessAlert: boolean, showFailAlert: boolean }> {
@@ -50,10 +50,6 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
         this.setState({ redirect: !this.state.redirect })
     }
 
-    showSuccessAlert() {
-        this.setState({ showSuccessAlert: !this.state.showSuccessAlert })
-    }
-
     onFailConfirm: React.FC = () => {
         return (
             <div>
@@ -61,10 +57,6 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                 <Redirect to="/login" />
             </div>
         )
-    }
-
-    showFailAlert() {
-        this.setState({ showFailAlert: !this.state.showFailAlert })
     }
 
     // Sign in - Form is copied from: https://github.com/mui-org/material-ui/blob/master/docs/src/pages/getting-started/templates/sign-in/SignIn.js
@@ -89,15 +81,14 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                             }}
                             validationSchema={this.validationSchema}
                             onSubmit={values => {
-                                HttpService.request(HTTPMETHOD.POST, '/auth/login', values)
+                                LoginHttpService.login(values)
                                     .then(res => {
                                         localStorage.setItem("jws", res.data.jws)
-                                        localStorage.setItem("user", res.data.id)
-                                        this.showSuccessAlert()
+                                        localStorage.setItem("jws", res.data.id)
+                                        this.setState({ showSuccessAlert: !this.state.showSuccessAlert })
                                     })
                                     .catch(err => {
-                                        this.showFailAlert()
-                                        console.log(err)
+                                        this.setState({ showFailAlert: !this.state.showFailAlert })
                                     })
                             }}
                         >
