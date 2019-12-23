@@ -55,7 +55,7 @@ export default class ReservationInput extends Component<{ restaurant: Restaurant
         this.setState({ isLoading: true })
         let credentials = {
             restaurantId: this.props.restaurant.id,
-            customerId: localStorage.getItem("user"),
+            customerId: localStorage.getItem("id"),
             startDateTime: this.convert(values.date) + ':00.000+01:00',
             groupSize: values.groupSize
         };

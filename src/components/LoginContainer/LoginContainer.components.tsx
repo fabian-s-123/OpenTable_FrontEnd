@@ -84,7 +84,7 @@ export default class LoginContainer extends Component<{}, { redirect: boolean, s
                                 LoginHttpService.login(values)
                                     .then(res => {
                                         localStorage.setItem("jws", res.data.jws)
-                                        localStorage.setItem("jws", res.data.id)
+                                        localStorage.setItem("id", res.data.id)
                                         this.setState({ showSuccessAlert: !this.state.showSuccessAlert })
                                     })
                                     .catch(err => {

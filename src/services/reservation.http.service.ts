@@ -4,6 +4,6 @@ export default class ReservationHttpService {
 
     static makeReservation(values: any) {
 
-        return HttpService.request(HTTPMETHOD.POST, '/customerReservations', values)
+        return HttpService.authorizedRequest(HTTPMETHOD.POST, '/customerReservations', values)
     }
 }
